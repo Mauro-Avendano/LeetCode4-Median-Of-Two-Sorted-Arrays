@@ -1,6 +1,6 @@
 # LeetCode4-Median-Of-Two-Sorted-Arrays
 
-Here we will discuss several ways to solve the following LeetCode [problem](https://leetcode.com/problems/median-of-two-sorted-arrays/description/).
+Here we will discuss several ways to solve the following LeetCode [problem](https://leetcode.com/problems/median-of-two-sorted-arrays/description/) with Java.
 
 If we omit the part that says that the complexity should be O(log (m+n)) we will have many ways of solving this problem so first we will explore a basic solution that does the following:
   - merge the two arrays in a result array
