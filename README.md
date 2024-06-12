@@ -29,4 +29,5 @@ class Solution {
 }
 ```
 
-The time complexity for this appoach is O((m+n)log(m+n)) since the Arrays.sort() method has a worst time complexity of O(nlog(n)).
+The time complexity for this appoach is O((m+n)log(m+n)) since the Arrays.sort() method has a worst case complexity of O(nlog(n)).
+The space complexity is O(n+m) since we are storing all the values in a new array.
