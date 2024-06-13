@@ -73,9 +73,50 @@ class Solution {
 }
 ```
 
-Here we are looping (m+n)/2 + 1 times so the time complexity is O(m+n) but surprisingly it performs really well, check the image below.
+Here we are looping (m+n)/2 + 1 times so the time complexity is O(m+n) but surprisingly it performs really well with 1 ms of execution time on leetcode.
 Space complexity is also O(m+n).
 
-[<img src="https://private-user-images.githubusercontent.com/5465728/339038636-7ef3f394-dcd7-408f-a12a-4d3feda7b0c5.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTgyMDcxMTUsIm5iZiI6MTcxODIwNjgxNSwicGF0aCI6Ii81NDY1NzI4LzMzOTAzODYzNi03ZWYzZjM5NC1kY2Q3LTQwOGYtYTEyYS00ZDNmZWRhN2IwYzUucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI0MDYxMiUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDA2MTJUMTU0MDE1WiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9ZGY0NmM2YmJmZTk5MTNiNDg0MTExZWM1ZjcxZDE0NzA1YzYwZTFlNWMyMmI2YTQ5NDMxNTcxMWZiMzRhNGMzNiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmYWN0b3JfaWQ9MCZrZXlfaWQ9MCZyZXBvX2lkPTAifQ.ZQrgI-8rCn6G6ZXSkY8YvANohrvUgcXBYlpQ-U2nFN4" width="500"/>](https://private-user-images.githubusercontent.com/5465728/339038636-7ef3f394-dcd7-408f-a12a-4d3feda7b0c5.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTgyMDcxMTUsIm5iZiI6MTcxODIwNjgxNSwicGF0aCI6Ii81NDY1NzI4LzMzOTAzODYzNi03ZWYzZjM5NC1kY2Q3LTQwOGYtYTEyYS00ZDNmZWRhN2IwYzUucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI0MDYxMiUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNDA2MTJUMTU0MDE1WiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9ZGY0NmM2YmJmZTk5MTNiNDg0MTExZWM1ZjcxZDE0NzA1YzYwZTFlNWMyMmI2YTQ5NDMxNTcxMWZiMzRhNGMzNiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QmYWN0b3JfaWQ9MCZrZXlfaWQ9MCZyZXBvX2lkPTAifQ.ZQrgI-8rCn6G6ZXSkY8YvANohrvUgcXBYlpQ-U2nFN4)
+Now we will explore another solution using binary search. This approach is absurdly difficult to implement and very hard to figure it out how to use the binary search but basically we have to do the following:
 
+ - Perform the binary search on the smaller array. ( O(log(n)) is better than O log(m) when n < m ).
+ - **Do the binary search to determine how many elements of the smaller array are present on the merged array**.
+ - Each array is partitioned based on the low and high values of the binary search.
+ - Please note that the condition we are looking for is that the previous element of the partition of the nums1 array has to be less than or equal to the next element to the partition of the nums2 array and the previous element of the partition of the nums2 array has to be smaller or equal than the next element of the partition of the nums1 array. With this conditions we can be sure we have the rights partitions in order to compute the median. l1, l2, r1, r2 represents the left and right elements to the partitions of the arrays.
+ - If the previous condition is not met, we discard the top half or bottom half of the search and continue iterating until we reach the desired value.
+
+```java
+public class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {        
+        if (nums1.length > nums2.length) {
+            return findMedianSortedArrays(nums2, nums1);
+        }
+        
+        int low = 0;
+        int high = nums1.length;
+        
+        while (low <= high) {
+            int partition1 = (low + high) / 2;
+            int partition2 = (nums1.length + nums2.length + 1) / 2 - partition1;
+            
+            int l1 = (partition1 == 0) ? Integer.MIN_VALUE : nums1[partition1 - 1];
+            int r1 = (partition1 == nums1.length) ? Integer.MAX_VALUE : nums1[partition1];
+            int l2 = (partition2 == 0) ? Integer.MIN_VALUE : nums2[partition2 - 1];
+            int r2 = (partition2 == nums2.length) ? Integer.MAX_VALUE : nums2[partition2];
+            
+            if (l1 <= r2 && l2 <= r1) {
+                if ((nums1.length + nums2.length) % 2 == 0) {
+                    return (double) (Math.max(l1, l2) + Math.min(r1, r2)) / 2;
+                } else {
+                    return (double) Math.max(l1, l2);
+                }
+            } else if (l1 > r2) {
+                high = partition1 - 1;
+            } else {
+                low = partition1 + 1;
+            }
+        }
+        return 0.0;
+    }
+}
+```
 
